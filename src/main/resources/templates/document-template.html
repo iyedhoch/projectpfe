@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>[[${title}]]</title>
+</head>
+<body>
+<h1>Project: <span th:text="${title}"></span></h1>
+<p>Build: <span th:text="${build}"></span></p>
+<p>Scope: <span th:text="${scope}"></span></p>
+
+<div th:each="testCase : ${testCases}">
+    <h2 th:text="${testCase.name}"></h2>
+    <p th:text="${testCase.description}"></p>
+    <p><b>Expected:</b> <span th:text="${testCase.expectedResult}"></span></p>
+
+    <ul>
+        <li th:each="execution : ${testCase.executions}">
+            <span th:text="${execution.status}"></span> -
+            <span th:text="${execution.comment}"></span> -
+            <span th:text="${execution.executionDate}"></span>
+        </li>
+    </ul>
+</div>
+<div th:if="${includeStatistics}">
+    <h2>Test Execution Summary</h2>
+    <ul>
+        <li>Total Tests: <span th:text="${statistics.totalTests}"></span></li>
+        <li>Passed: <span th:text="${statistics.passed}"></span></li>
+        <li>Failed: <span th:text="${statistics.failed}"></span></li>
+        <li>Blocked: <span th:text="${statistics.blocked}"></span></li>
+        <li>Pass Rate: <span th:text="${statistics.passRate}"></span>%</li>
+    </ul>
+</div>
+</body>
+</html>
