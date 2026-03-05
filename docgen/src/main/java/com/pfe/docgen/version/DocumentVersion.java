@@ -1,6 +1,6 @@
 package com.pfe.docgen.version;
 
-import com.pfe.docgen.template.TemplateConfig;
+import com.pfe.docgen.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,4 +39,8 @@ public class DocumentVersion {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String configurationSnapshot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

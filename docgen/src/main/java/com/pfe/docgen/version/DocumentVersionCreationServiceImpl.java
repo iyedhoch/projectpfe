@@ -1,6 +1,10 @@
 package com.pfe.docgen.version;
 
+import com.pfe.docgen.security.CurrentUserService;
+import com.pfe.docgen.user.User;
+import com.pfe.docgen.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +15,8 @@ import java.time.LocalDateTime;
 public class DocumentVersionCreationServiceImpl implements DocumentVersionCreationService {
 
     private final DocumentVersionRepository repository;
+        private final UserRepository userRepository;
+        private final CurrentUserService currentUserService;
 
     @Override
     @Transactional
@@ -20,8 +26,16 @@ public class DocumentVersionCreationServiceImpl implements DocumentVersionCreati
                                          String fileName,
                                          String configSnapshot) {
 
+        String username = currentUserService.getCurrentUsername();
+        if (username == null) {
+            throw new AccessDeniedException("Unauthenticated access");
+        }
+
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AccessDeniedException("Authenticated user not found"));
+
         int nextVersion = repository
-                .findTopByTestPlanIdOrderByVersionNumberDesc(testPlanId)
+                .findTopByTestPlanIdAndUserUsernameOrderByVersionNumberDesc(testPlanId, username)
                 .map(v -> v.getVersionNumber() + 1)
                 .orElse(1);
 
@@ -35,6 +49,7 @@ public class DocumentVersionCreationServiceImpl implements DocumentVersionCreati
                 .generatedAt(LocalDateTime.now())
                 .fileContent(fileContent)
                 .configurationSnapshot(configSnapshot)
+                .user(currentUser)
                 .build();
 
         return repository.save(version);

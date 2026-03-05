@@ -10,5 +10,11 @@ public interface DocumentVersionRepository
 
     List<DocumentVersion> findByTestPlanIdOrderByVersionNumberDesc(Long testPlanId);
 
+    List<DocumentVersion> findByTestPlanIdAndUserUsernameOrderByVersionNumberDesc(Long testPlanId, String username);
+
     Optional<DocumentVersion> findTopByTestPlanIdOrderByVersionNumberDesc(Long testPlanId);
+
+    Optional<DocumentVersion> findTopByTestPlanIdAndUserUsernameOrderByVersionNumberDesc(Long testPlanId, String username);
+
+    Optional<DocumentVersion> findByIdAndUserUsername(Long id, String username);
 }

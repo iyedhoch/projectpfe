@@ -2,25 +2,30 @@ package com.pfe.docgen.version;
 
 import com.pfe.docgen.dto.DocumentVersionResponseDTO;
 import com.pfe.docgen.dto.VersionDiffResponseDTO;
+import com.pfe.docgen.security.CurrentUserService;
 import com.pfe.docgen.service.DocumentGenerationService;
 import com.pfe.docgen.template.TemplateConfig;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentVersionServiceImpl implements DocumentVersionService {
 
     private final DocumentVersionRepository repository;
-        private final ObjectMapper objectMapper;
-        private final DocumentGenerationService documentGenerationService;
+    private final ObjectMapper objectMapper;
+    private final DocumentGenerationService documentGenerationService;
     private final DocumentVersionCreationService documentVersionCreationService;
+    private final CurrentUserService currentUserService;
 
     @Override
     @Transactional
@@ -41,11 +46,9 @@ public class DocumentVersionServiceImpl implements DocumentVersionService {
     @Override
     @Transactional(readOnly = true)
     public VersionDiffResponseDTO compareVersions(Long versionId1, Long versionId2) {
-        DocumentVersion version1 = repository.findById(versionId1)
-                .orElseThrow(() -> new VersionNotFoundException(versionId1));
+        DocumentVersion version1 = getOwnedVersionOrThrow(versionId1);
 
-        DocumentVersion version2 = repository.findById(versionId2)
-                .orElseThrow(() -> new VersionNotFoundException(versionId2));
+        DocumentVersion version2 = getOwnedVersionOrThrow(versionId2);
 
         if (!Objects.equals(version1.getTestPlanId(), version2.getTestPlanId())) {
             throw new IllegalArgumentException("Versions must belong to the same document/test plan");
@@ -90,8 +93,7 @@ public class DocumentVersionServiceImpl implements DocumentVersionService {
     @Override
     @Transactional
     public DocumentVersionResponseDTO restoreVersion(Long versionId) {
-        DocumentVersion sourceVersion = repository.findById(versionId)
-                .orElseThrow(() -> new VersionNotFoundException(versionId));
+        DocumentVersion sourceVersion = getOwnedVersionOrThrow(versionId);
 
         Long documentId = sourceVersion.getTestPlanId();
         String configSnapshot = sourceVersion.getConfigurationSnapshot();
@@ -107,6 +109,22 @@ public class DocumentVersionServiceImpl implements DocumentVersionService {
                 .generateFromSnapshot(documentId, format, configSnapshot);
 
         return toResponseDTO(restoredVersion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DocumentVersionResponseDTO> getVersions(Long testPlanId) {
+        String username = getRequiredCurrentUsername();
+        return repository.findByTestPlanIdAndUserUsernameOrderByVersionNumberDesc(testPlanId, username)
+                .stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DocumentVersion getVersionContent(Long versionId) {
+        return getOwnedVersionOrThrow(versionId);
     }
 
     private DocumentVersionResponseDTO toResponseDTO(DocumentVersion version) {
@@ -131,5 +149,24 @@ public class DocumentVersionServiceImpl implements DocumentVersionService {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid configuration snapshot JSON", e);
         }
+    }
+
+    private DocumentVersion getOwnedVersionOrThrow(Long versionId) {
+        String username = getRequiredCurrentUsername();
+        return repository.findByIdAndUserUsername(versionId, username)
+                .orElseGet(() -> {
+                    if (repository.existsById(versionId)) {
+                        throw new AccessDeniedException("You do not have access to this document");
+                    }
+                    throw new VersionNotFoundException(versionId);
+                });
+    }
+
+    private String getRequiredCurrentUsername() {
+        String username = currentUserService.getCurrentUsername();
+        if (username == null || username.isBlank()) {
+            throw new AccessDeniedException("Unauthenticated access");
+        }
+        return username;
     }
 }
