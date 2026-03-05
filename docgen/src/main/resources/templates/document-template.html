@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${config.customTitle != null ? config.customTitle : document.title}"></title>
+</head>
+<body>
+
+<h1 th:text="${config.customTitle != null ? config.customTitle : document.title}"></h1>
+
+<p><b>Project:</b> <span th:text="${document.title}"></span></p>
+<p><b>Build:</b> <span th:text="${document.build}"></span></p>
+<p><b>Scope:</b> <span th:text="${document.scope}"></span></p>
+
+<!-- Test Cases Section -->
+<div th:if="${config.showTestCases}">
+
+    <div th:each="testCase : ${document.testCases}">
+        <h2 th:text="${testCase.name}"></h2>
+        <p th:text="${testCase.description}"></p>
+        <p><b>Expected:</b> <span th:text="${testCase.expectedResult}"></span></p>
+
+        <!-- Executions -->
+        <ul th:if="${config.showExecutions}">
+            <li th:each="execution : ${testCase.executions}">
+                <span th:text="${execution.status}"></span> -
+                <span th:text="${execution.comment}"></span> -
+                <span th:text="${execution.executionDate}"></span>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Statistics Section -->
+<div th:if="${config.showStatistics}">
+    <h2>Test Execution Summary</h2>
+
+    <ul>
+        <li>Total Tests: <span th:text="${statistics.totalTests}"></span></li>
+        <li>Passed: <span th:text="${statistics.passed}"></span></li>
+        <li>Failed: <span th:text="${statistics.failed}"></span></li>
+        <li>Blocked: <span th:text="${statistics.blocked}"></span></li>
+        <li>Pass Rate: <span th:text="${statistics.passRate}"></span>%</li>
+    </ul>
+</div>
+
+<!-- Footer -->
+<div th:if="${config.footerText != null}">
+    <hr/>
+    <p th:text="${config.footerText}"></p>
+</div>
+
+</body>
+</html>
