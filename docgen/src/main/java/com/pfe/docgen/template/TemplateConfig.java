@@ -1,5 +1,6 @@
 package com.pfe.docgen.template;
 
+import com.pfe.docgen.entity.DocumentType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,9 @@ public class TemplateConfig {
     private String name;
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private DocumentType documentType;
 
     private String executionStatusFilter;
 

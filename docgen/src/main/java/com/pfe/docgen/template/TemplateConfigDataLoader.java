@@ -14,7 +14,6 @@ public class TemplateConfigDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        // CLIENT REPORT TEMPLATE (Set as active by default)
         templateConfigService.createTemplate(
                 TemplateConfig.builder()
                         .name("CLIENT_REPORT")
@@ -28,7 +27,6 @@ public class TemplateConfigDataLoader implements CommandLineRunner {
                         .build()
         );
 
-        // INTERNAL QA TEMPLATE
         templateConfigService.createTemplate(
                 TemplateConfig.builder()
                         .name("INTERNAL_QA")

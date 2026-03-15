@@ -1,5 +1,7 @@
 package com.pfe.docgen.version;
 
+import com.pfe.docgen.entity.DocumentMetadata;
+import com.pfe.docgen.entity.TestPlan;
 import com.pfe.docgen.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +20,9 @@ public class DocumentVersion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long testPlanId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "test_plan_id", nullable = false)
+    private TestPlan testPlan;
 
     private int versionNumber;
 
@@ -41,6 +45,10 @@ public class DocumentVersion {
     private String configurationSnapshot;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "document_metadata_id")
+    private DocumentMetadata documentMetadata;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "generated_by_user_id")
+    private User generatedBy;
 }

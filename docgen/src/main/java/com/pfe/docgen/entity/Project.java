@@ -8,32 +8,29 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 @Entity
-@Table(name = "testplan")
-public class TestPlan {
+@Table(name = "project")
+public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    private String sprintName;
+    @Column(nullable = false)
+    private String clientName;
 
-    private String build;
-
-    private String scope;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
+    private String description;
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "testPlan", cascade = CascadeType.ALL)
-    private List<TestCase> testCases;
+    @OneToMany(mappedBy = "project")
+    private List<TestPlan> testPlans;
 }

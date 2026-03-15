@@ -1,5 +1,7 @@
 package com.pfe.docgen.version;
 
+import com.pfe.docgen.entity.TestPlan;
+import com.pfe.docgen.repository.TestPlanRepository;
 import com.pfe.docgen.security.CurrentUserService;
 import com.pfe.docgen.user.User;
 import com.pfe.docgen.user.UserRepository;
@@ -15,8 +17,9 @@ import java.time.LocalDateTime;
 public class DocumentVersionCreationServiceImpl implements DocumentVersionCreationService {
 
     private final DocumentVersionRepository repository;
-        private final UserRepository userRepository;
-        private final CurrentUserService currentUserService;
+    private final TestPlanRepository testPlanRepository;
+    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
     @Override
     @Transactional
@@ -34,13 +37,16 @@ public class DocumentVersionCreationServiceImpl implements DocumentVersionCreati
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AccessDeniedException("Authenticated user not found"));
 
+        TestPlan testPlan = testPlanRepository.findById(testPlanId)
+            .orElseThrow(() -> new IllegalArgumentException("Test plan not found with id: " + testPlanId));
+
         int nextVersion = repository
-                .findTopByTestPlanIdAndUserUsernameOrderByVersionNumberDesc(testPlanId, username)
+            .findTopByTestPlanIdAndGeneratedByUsernameOrderByVersionNumberDesc(testPlanId, username)
                 .map(v -> v.getVersionNumber() + 1)
                 .orElse(1);
 
         DocumentVersion version = DocumentVersion.builder()
-                .testPlanId(testPlanId)
+            .testPlan(testPlan)
                 .versionNumber(nextVersion)
                 .format(format)
                 .fileName(fileName)
@@ -49,7 +55,7 @@ public class DocumentVersionCreationServiceImpl implements DocumentVersionCreati
                 .generatedAt(LocalDateTime.now())
                 .fileContent(fileContent)
                 .configurationSnapshot(configSnapshot)
-                .user(currentUser)
+                .generatedBy(currentUser)
                 .build();
 
         return repository.save(version);
