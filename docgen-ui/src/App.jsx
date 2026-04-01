@@ -1,6 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import Templates from './pages/Templates';
+import DashboardPage from './pages/dashboard';
+import ExportPage from './pages/export';
 import './App.css';
 
 function App() {
@@ -12,19 +14,19 @@ function App() {
             <h2 className="app-nav__brand">DocGen Back-Office</h2>
             <ul className="app-nav__links">
               <li>
-                <Link to="/templates" className="app-nav__link">
+                <NavLink to="/templates" className={({ isActive }) => `app-nav__link ${isActive ? 'active' : ''}`}>
                   📄 Templates
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/dashboard" className="app-nav__link">
+                <NavLink to="/dashboard" className={({ isActive }) => `app-nav__link ${isActive ? 'active' : ''}`}>
                   📊 Dashboard
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/export" className="app-nav__link">
+                <NavLink to="/export" className={({ isActive }) => `app-nav__link ${isActive ? 'active' : ''}`}>
                   📥 Export
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -32,24 +34,14 @@ function App() {
 
         <main className="app-main">
           <Routes>
-            <Route path="/" element={<Navigate to="/templates" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/templates" element={<Templates />} />
-            <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
-            <Route path="/export" element={<PlaceholderPage title="Export" />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/export" element={<ExportPage />} />
           </Routes>
         </main>
       </div>
     </Router>
-  );
-}
-
-// Placeholder component for pages not yet implemented
-function PlaceholderPage({ title }) {
-  return (
-    <div style={{ padding: '40px', textAlign: 'center' }}>
-      <h1>{title}</h1>
-      <p>This page is coming soon...</p>
-    </div>
   );
 }
 

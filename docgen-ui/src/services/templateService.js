@@ -6,7 +6,7 @@ import apiClient from './api';
  */
 export const getActiveTemplate = async () => {
   try {
-    const response = await apiClient.get('/config');
+    const response = await apiClient.get('/api/templates/active');
     return response.data;
   } catch (error) {
     console.error('Error fetching active template:', error);
@@ -20,7 +20,7 @@ export const getActiveTemplate = async () => {
  */
 export const getAllTemplates = async () => {
   try {
-    const response = await apiClient.get('/config/all');
+    const response = await apiClient.get('/api/templates');
     return response.data;
   } catch (error) {
     console.error('Error fetching all templates:', error);
@@ -35,7 +35,11 @@ export const getAllTemplates = async () => {
  */
 export const saveTemplateConfig = async (config) => {
   try {
-    const response = await apiClient.post('/config', config);
+    const templateId = config?.id;
+    if (!templateId) {
+      throw new Error('Template id is required to activate a template');
+    }
+    const response = await apiClient.post(`/api/templates/${templateId}/activate`);
     return response.data;
   } catch (error) {
     console.error('Error saving template config:', error);

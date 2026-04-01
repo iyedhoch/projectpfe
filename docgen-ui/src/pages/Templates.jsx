@@ -24,7 +24,7 @@ const Templates = () => {
       const data = await getAllTemplates();
       setTemplates(data);
     } catch (err) {
-      setError('Failed to load templates. Please ensure the backend is running on http://localhost:8080');
+      setError('Failed to load templates. Please ensure the Nest backend is running on http://localhost:3000');
       console.error('Error loading templates:', err);
     } finally {
       setLoading(false);
