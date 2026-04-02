@@ -1,0 +1,785 @@
+﻿﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Quality Report</title>
+  <style>
+    html {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    @page {
+      size: A4;
+      margin: 18mm 14mm;
+    }
+
+    :root {
+      --ink: #37352f;
+      --muted: rgba(55, 53, 47, 0.62);
+      --line: rgba(55, 53, 47, 0.14);
+      --soft: #f7f6f3;
+      --callout: #f3f7fc;
+      --accent: #1f4e79;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      white-space: normal;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    article.page {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .cover-page {
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .cover-logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 70px;
+      margin-bottom: 2rem;
+    }
+
+    .cover-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+
+    .cover-subtitle {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+    .cover-meta {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 78%;
+      max-width: 620px;
+    }
+
+    .cover-meta td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .cover-meta td:first-child {
+      width: 34%;
+      font-weight: 700;
+      background: var(--soft);
+    }
+
+    .company-logo,
+    .client-logo {
+      max-height: 64px;
+      max-width: 220px;
+      object-fit: contain;
+    }
+
+    .toc-page {
+      min-height: 250mm;
+    }
+
+    .toc-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 1.5rem;
+    }
+
+    .toc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .toc-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin: 0.45rem 0;
+      font-size: 1rem;
+    }
+
+    .toc-item .dots {
+      flex: 1;
+      border-bottom: 1px dotted #9b9993;
+      transform: translateY(-2px);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      font-weight: 650;
+      margin-bottom: 0.35rem;
+      page-break-after: avoid;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      margin-top: 1.5rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.24rem;
+    }
+
+    h3 {
+      font-size: 1.18rem;
+      margin-top: 1.2rem;
+    }
+
+    h4,
+    h5 {
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+
+    p {
+      margin: 0.55rem 0;
+    }
+
+    ul {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin: 0.22rem 0;
+    }
+
+    .callout {
+      border-radius: 10px;
+      border: 1px solid rgba(31, 78, 121, 0.18);
+      background: var(--callout);
+      padding: 0.9rem 1rem;
+      margin: 0.8rem 0;
+      page-break-inside: avoid;
+    }
+
+    .section {
+      page-break-inside: avoid;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1rem;
+      table-layout: fixed;
+      page-break-inside: avoid;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    tfoot {
+      display: table-footer-group;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.88rem;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    th {
+      background: var(--soft);
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .steps-table col.col-step {
+      width: 8%;
+    }
+
+    .steps-table col.col-action {
+      width: 46%;
+    }
+
+    .steps-table col.col-expected {
+      width: 46%;
+    }
+
+    .suite {
+      margin-top: 1rem;
+      padding-left: 0.9rem;
+      border-left: 2px solid var(--line);
+      page-break-inside: avoid;
+    }
+
+    .suite + .suite {
+      page-break-before: always;
+    }
+
+    .suite-title {
+      margin: 0 0 0.3rem;
+      color: #1f3f63;
+    }
+
+    .test-case {
+      margin: 0.7rem 0 0.9rem;
+      padding: 0.7rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      page-break-inside: avoid;
+    }
+
+    .test-case-title {
+      margin: 0;
+      color: #15344f;
+      font-size: 0.96rem;
+    }
+
+    .summary {
+      color: #4e4b45;
+      margin-top: 0.35rem;
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      border-top: 1px solid var(--line);
+      padding-top: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <article class="page sans">
+    <section class="cover-page section">
+      <div class="cover-logos">
+        <div>
+          <img src="file:///c:/Users/FORGE/Downloads/docgen/nest-backend/src/mock-data/logo-proxym-png.jpg" class="company-logo" />
+        </div>
+        <div>
+        </div>
+      </div>
+
+      <div>
+        <h1 class="cover-title">Cahier de recette</h1>
+        <p class="cover-subtitle">Document de validation fonctionnelle</p>
+      </div>
+
+      <table class="cover-meta">
+        <tbody>
+          <tr><td>Client</td><td>Mutuelle Horizon Assurances</td></tr>
+          <tr><td>Projet</td><td>ERP Migration</td></tr>
+          <tr><td>Version</td><td>1.3</td></tr>
+          <tr><td>Date</td><td>25/03/2026</td></tr>
+          <tr><td>Auteur</td><td>Architecture Team</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="toc-page section page-break">
+      <h2 class="toc-title">Table des matières</h2>
+      <ul class="toc-list">
+        <li class="toc-item"><span>1. Description du document</span><span class="dots"></span><span>3</span></li>
+        <li class="toc-item"><span>2. Objectif du document</span><span class="dots"></span><span>4</span></li>
+        <li class="toc-item"><span>3. Informations projet</span><span class="dots"></span><span>5</span></li>
+        <li class="toc-item"><span>4. Suites de test</span><span class="dots"></span><span>6</span></li>
+        <li class="toc-item"><span>5. Synthese</span><span class="dots"></span><span>7</span></li>
+        <li class="toc-item"><span>6. Conclusion</span><span class="dots"></span><span>8</span></li>
+      </ul>
+    </section>
+
+    <div class="page-body">
+      <section class="section page-break">
+        <h2>Propriete et controle du document</h2>
+
+        <h3>Propriete</h3>
+        <div class="callout">
+          Ce document est confidentiel et a ete prepare specialement pour Mutuelle Horizon Assurances.
+          Les informations qu'il contient ne doivent pas etre transmises a des tiers sans autorisation.
+        </div>
+
+        <h3>Controle du document</h3>
+        <ul>
+          <li>Titre : Project Quality Report</li>
+          <li>Nom de fichier : cahier-recette-1-1.3.pdf</li>
+          <li>Type de fichier : Cahier de recette</li>
+          <li>References : Default Template</li>
+        </ul>
+
+        <h3>Revisions du document</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Version</th>
+              <th>Auteur</th>
+              <th>Statut du document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>25/03/2026</td>
+              <td>1.3</td>
+              <td>Architecture Team</td>
+              <td>Version courante</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Approbations</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Role</th>
+              <th>Signature</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nadia Benyahia</td>
+              <td>Responsable Recette Metier</td>
+              <td>Signature: __________________</td>
+              <td>20/03/2026</td>
+            </tr>
+            <tr>
+              <td>Karim El Mansouri</td>
+              <td>Product Owner Contrats</td>
+              <td>Signature: __________________</td>
+              <td>21/03/2026</td>
+            </tr>
+            <tr>
+              <td>Sofia Haddad</td>
+              <td>Directrice Qualite SI</td>
+              <td>Signature: __________________</td>
+              <td>22/03/2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section page-break">
+        <h2>1. Description du document</h2>
+        <p>Ce document formalise les scenarios de recette fonctionnelle pour la gestion des contrats, avenants et sinistres dans le portail de souscription et de suivi client.</p>
+
+        <h2>2. Objectif du document</h2>
+        <p>Valider la conformite des parcours critiques metier avant mise en production: souscription, gestion du cycle de vie du contrat, declaration de sinistre et indemnisation.</p>
+      </section>
+
+      <section class="section page-break">
+        <h2>3. Informations projet</h2>
+        <ul>
+          <li>Client : Mutuelle Horizon Assurances</li>
+          <li>Projet / Produit : ERP Migration</li>
+          <li>Version / Sprint : 1.3</li>
+          <li>Perimetre fonctionnel : Suites et cas de test documentes</li>
+          <li>Environnement de test : QA</li>
+          <li>Equipe QA : Architecture Team</li>
+        </ul>
+      </section>
+
+      <section class="section page-break">
+        <h2>4. Suites de test</h2>
+
+
+                  <div class="suite suite-depth-0">
+                    <h2 class="suite-title">1. Gestion des contrats</h2>
+          
+          
+                              <div class="suite suite-depth-1">
+                                <h3 class="suite-title">1.1. Avenants et resiliation</h3>
+                      
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 1.1.1 ASA-1490 : Avenant de changement de formule de garanties</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier la prise en compte d&#x27;un passage de formule Tiers Etendu vers Tous Risques en milieu d&#x27;echeance.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Un contrat auto actif existe avec formule Tiers Etendu.</li>
+                                    <li>La date du jour est comprise dans la periode de couverture.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Depuis la fiche contrat, cliquer sur Creer un avenant.</td>
+                                        <td>L&#x27;assistant d&#x27;avenant s&#x27;ouvre et propose les operations autorisees.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Selectionner Changement de formule puis choisir Tous Risques.</td>
+                                        <td>Le systeme recalcule la prime au prorata de la periode restante.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Valider l&#x27;avenant et confirmer la date d&#x27;effet.</td>
+                                        <td>Le contrat est mis a jour avec un avenant numerote et historise.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Telecharger le document d&#x27;avenant.</td>
+                                        <td>Le PDF contient la nouvelle formule, la date d&#x27;effet et le delta de cotisation.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 1.1.2 ASA-1538 : Resiliation a echeance avec preavis conforme</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier la resiliation a echeance annuelle avec respect du preavis contractuel de 2 mois.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Un contrat habitation actif arrive a echeance dans 70 jours.</li>
+                                    <li>Le profil utilisateur possede le droit RESILIER_CONTRAT.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Ouvrir le contrat habitation cible puis acceder a l&#x27;onglet Resiliation.</td>
+                                        <td>Le motif et la date de prise d&#x27;effet sont editables.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Saisir le motif Resiliation a echeance et confirmer la date d&#x27;echeance.</td>
+                                        <td>Le controle preavis est valide sans erreur.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Confirmer la resiliation.</td>
+                                        <td>Le statut devient Resilie a echeance avec date d&#x27;effet planifiee.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Verifier le journal des evenements et la lettre generee.</td>
+                                        <td>Le journal trace la demande et la lettre de confirmation est archivee.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                      
+                              </div>
+                              <div class="suite suite-depth-1">
+                                <h3 class="suite-title">1.2. Souscription initiale</h3>
+                      
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 1.2.1 ASA-1376 : Creation d&#x27;un contrat auto particulier</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier qu&#x27;un gestionnaire peut creer un contrat auto avec calcul de prime et edition des conditions particulieres.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Le produit Auto Tous Risques est actif dans le referentiel tarifaire.</li>
+                                    <li>Le profil gestionnaire agence dispose du droit CREER_CONTRAT.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Ouvrir le menu Souscription puis selectionner Nouveau contrat auto.</td>
+                                        <td>Le formulaire de souscription auto s&#x27;affiche avec les sections Assure, Vehicule et Garanties.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Saisir les informations du souscripteur et du vehicule puis enregistrer le devis.</td>
+                                        <td>Le devis est cree avec un numero provisoire et un statut En attente de validation.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Lancer le calcul de prime.</td>
+                                        <td>La prime TTC annuelle est calculee et le detail des taxes est visible.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Valider la souscription et generer les documents contractuels.</td>
+                                        <td>Le contrat passe au statut Actif et les conditions particulieres PDF sont disponibles au telechargement.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 1.2.2 ASA-1421 : Blocage de souscription en cas de piece manquante</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier qu&#x27;une souscription est bloquee si le justificatif de permis de conduire est absent.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Le controle documentaire obligatoire est active pour le produit auto.</li>
+                                    <li>Le dossier client ne contient aucune piece de type Permis de conduire.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Demarrer une souscription auto pour un client existant.</td>
+                                        <td>Le formulaire de souscription est accessible.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Completer les donnees obligatoires puis tenter la validation finale.</td>
+                                        <td>Le systeme refuse la validation et affiche une alerte Piece justificative manquante.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Consulter le detail du blocage depuis le panneau de conformite.</td>
+                                        <td>Le motif indique explicitement l&#x27;absence du permis de conduire avec le niveau d&#x27;erreur Bloquant.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Televerser le justificatif requis et relancer la validation.</td>
+                                        <td>Le blocage disparait et la souscription peut etre finalisee.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                      
+                              </div>
+                  </div>
+                  <div class="suite suite-depth-0">
+                    <h2 class="suite-title">2. Gestion des sinistres</h2>
+          
+          
+                              <div class="suite suite-depth-1">
+                                <h3 class="suite-title">2.1. Declaration de sinistre</h3>
+                      
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 2.1.1 ASA-1612 : Declaration d&#x27;un sinistre auto materiel</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier qu&#x27;un sinistre materiel peut etre declare sur un contrat actif avec creation du dossier de gestion.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Le contrat auto est actif a la date du sinistre.</li>
+                                    <li>Le client est rattache a un profil indemnisable.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Depuis la fiche client, ouvrir le menu Declarer un sinistre.</td>
+                                        <td>Le formulaire de declaration s&#x27;affiche avec le contrat preselectionne.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Saisir la date, le lieu et les circonstances du sinistre.</td>
+                                        <td>Les donnees sont enregistrees sans erreur de validation.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Ajouter les photos du dommage et valider la declaration.</td>
+                                        <td>Un numero de dossier sinistre est genere et le statut Initial est attribue.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Consulter la timeline du dossier.</td>
+                                        <td>La creation du dossier et les pieces jointes apparaissent dans l&#x27;historique.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                      
+                              </div>
+                              <div class="suite suite-depth-1">
+                                <h3 class="suite-title">2.2. Instruction et indemnisation</h3>
+                      
+                                <article class="test-case">
+                                  <h5 class="test-case-title">Cas de test 2.2.1 ASA-1689 : Validation d&#x27;une proposition d&#x27;indemnisation</h5>
+                                  <p class="summary"><strong>Resume :</strong> Verifier le workflow de validation manager pour une proposition d&#x27;indemnisation superieure au seuil delegation gestionnaire.</p>
+                      
+                                  <p><strong>Preconditions :</strong></p>
+                                  <ul>
+                                    <li>Un dossier sinistre est au statut Evaluation terminee.</li>
+                                    <li>Le montant propose depasse le seuil de validation manager.</li>
+                                  </ul>
+                      
+                                  <table class="steps-table">
+                                    <colgroup>
+                                      <col class="col-step" />
+                                      <col class="col-action" />
+                                      <col class="col-expected" />
+                                    </colgroup>
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Actions a realiser</th>
+                                        <th>Resultats attendus</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>Renseigner le montant d&#x27;indemnisation et soumettre la proposition.</td>
+                                        <td>Le systeme affecte automatiquement la tache au manager indemnisation.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>Se connecter avec un profil manager et ouvrir la tache de validation.</td>
+                                        <td>Les details du sinistre et les justificatifs financiers sont consultables.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>Approuver la proposition.</td>
+                                        <td>Le dossier passe au statut Paiement en attente et une trace de validation est enregistree.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>4</td>
+                                        <td>Declencher l&#x27;ordre de paiement.</td>
+                                        <td>Le paiement est cree avec reference comptable et date de virement planifiee.</td>
+                                      </tr>
+                                      <tr>
+                                        <td>5</td>
+                                        <td>Verifier la notification client.</td>
+                                        <td>Un email de confirmation d&#x27;indemnisation est envoye au client.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </article>
+                      
+                              </div>
+                  </div>
+      </section>
+
+      <section class="section page-break">
+        <h2>5. Synthese</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Indicateur</th>
+              <th>Valeur</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nombre total de cas</td>
+              <td>1.3</td>
+            </tr>
+            <tr>
+              <td>Anomalies ouvertes</td>
+              <td>Voir suivi QA</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section page-break">
+        <h2>6. Conclusion</h2>
+        <p>Decision de recette a confirmer lors du comite de validation.</p>
+      </section>
+    </div>
+
+    <footer class="footer-note">
+      <span>Generated by DocGen Mock Pipeline</span>
+      <span>Modele inspire de la structure Notion, adapte pour rendu HTML/PDF.</span>
+    </footer>
+  </article>
+</body>
+</html>
+
